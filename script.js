@@ -1,0 +1,561 @@
+const STORAGE_KEY = "invitationData";
+
+function readFromPage() {
+  const el = (id) => document.getElementById(id);
+  const text = (id) => el(id)?.textContent?.trim() ?? "";
+  const htmlToText = (id) => {
+    const node = el(id);
+    if (!node) return "";
+    const temp = document.createElement('div');
+    temp.innerHTML = node.innerHTML || "";
+    // Normalize line breaks from <br> to \n
+    temp.querySelectorAll('br').forEach(b => b.replaceWith('\n'));
+    return (temp.textContent || '').trim();
+  };
+  const linkText = (id, prefix) => {
+    const node = el(id);
+    if (!node) return "";
+    const href = node.getAttribute("href") || "";
+    if (href.startsWith(prefix)) return href.slice(prefix.length).trim();
+    return node.textContent?.trim() ?? "";
+  };
+  const heroParts = text("hero-date-line").split("·").map((s) => s.trim());
+
+  return {
+    brideName: text("bride-name"),
+    groomName: text("groom-name"),
+    inviteLabel: text("invite-label"),
+    inviteText: text("invite-text"),
+    weddingDate: text("wedding-date") || heroParts[0] || "",
+    weddingYear: text("wedding-year") || heroParts[1] || "",
+    weddingTime: text("wedding-time"),
+    countdownISO: el("countdown-iso")?.value?.trim() || "",
+    venueName: text("venue-name"),
+    venueAddress: htmlToText("venue-address"),
+    mapDirectionsAddress: "",
+    rsvpLabel: text("rsvp-label"),
+    rsvpContact: linkText("rsvp-contact", "mailto:"),
+    rsvpPhone: linkText("rsvp-phone", "tel:"),
+    detailVenue: htmlToText("detail-venue"),
+    detailTime: htmlToText("detail-time"),
+    detailDress: text("detail-dress"),
+    detailReception: htmlToText("detail-reception"),
+    mapVenue: text("map-venue"),
+    galleryCaption1: text("gallery-caption-1"),
+    galleryCaption2: text("gallery-caption-2"),
+    galleryCaption3: text("gallery-caption-3"),
+    galleryCaption4: text("gallery-caption-4"),
+  };
+}
+
+function getDefaultConfig() {
+  const c = window.INVITATION_CONFIG || {};
+  return {
+    brideName: c.brideName || "Bride",
+    groomName: c.groomName || "Groom",
+    inviteLabel: c.inviteLabel || "",
+    inviteText: c.inviteText || "",
+    weddingDate: c.weddingDate || "",
+    weddingYear: c.weddingYear || "",
+    weddingTime: c.weddingTime || "",
+    countdownISO: c.countdownISO || "2026-09-27T10:30:00+05:30",
+    venueName: c.venueName || "",
+    venueAddress: c.venueAddress || "",
+    mapDirectionsAddress:
+      c.mapDirectionsAddress ||
+      "Cantonment Board Thirumana Mandapam, GST Road, Pallavaram, Chennai, Tamil Nadu 600043, India",
+    mapVenue: c.mapVenue || c.venueName || "",
+    mapLatitude: c.mapLatitude ?? 12.9691277,
+    mapLongitude: c.mapLongitude ?? 80.1493513,
+    mapGoogleUrl: c.mapGoogleUrl || "",
+    bismillah: c.bismillah || "",
+    bismillahEnglish: c.bismillahEnglish || "",
+    countdownSubtitle: c.countdownSubtitle || "until our Nikah",
+    invitationDua:
+      c.invitationDua ||
+      "May Allah bless this union and grant us a life filled with peace, mercy, and love.",
+    footerDua: c.footerDua || "",
+    footerThanks: c.footerThanks || "",
+    rsvpLabel: c.rsvpLabel || "",
+    rsvpContact: c.rsvpContact || "",
+    rsvpPhone: c.rsvpPhone || "",
+    detailVenue: c.detailVenue || "",
+    detailTime: c.detailTime || "",
+    detailDress: c.detailDress || "",
+    detailReception: c.detailReception || "",
+    galleryCaption1: c.galleryCaption1 || "",
+    galleryCaption2: c.galleryCaption2 || "",
+    galleryCaption3: c.galleryCaption3 || "",
+    galleryCaption4: c.galleryCaption4 || "",
+    // hero media
+    heroVideo: c.heroVideo || "",
+    heroPoster: c.heroPoster || "",
+  };
+}
+
+function mergeNonEmpty(base, overrides) {
+  const out = { ...base };
+  for (const [key, value] of Object.entries(overrides)) {
+    if (value !== "" && value !== null && value !== undefined) out[key] = value;
+  }
+  return out;
+}
+
+function loadData() {
+  const base = mergeNonEmpty(getDefaultConfig(), readFromPage());
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed._savedFromEditor === true) {
+        const { _savedFromEditor, ...savedData } = parsed;
+        return mergeNonEmpty(base, savedData);
+      }
+    }
+  } catch (_) {}
+  return base;
+}
+
+function displayAddress(data) {
+  return (data.venueAddress || "").trim();
+}
+
+function directionsAddress(data) {
+  return (data.mapDirectionsAddress || displayAddress(data)).trim();
+}
+
+function nl2br(text) {
+  return String(text || "").replace(/\n/g, "<br>");
+}
+
+function updateDisplay(data) {
+  const couple = `${data.groomName} & ${data.brideName}`;
+  const shortAddr = displayAddress(data);
+
+  document.getElementById("bride-name").textContent = data.brideName;
+  document.getElementById("groom-name").textContent = data.groomName;
+  document.getElementById("nav-brand").textContent = couple;
+  document.getElementById("footer-names").textContent = couple;
+  const envelopeNames = document.getElementById("envelope-names");
+  if (envelopeNames) envelopeNames.textContent = couple;
+
+  document.getElementById("invite-label").textContent = data.inviteLabel;
+  document.getElementById("invite-text").textContent = data.inviteText;
+  document.getElementById("hero-date-line").textContent =
+    `${data.weddingDate} · ${data.weddingYear}`;
+  document.getElementById("wedding-date").textContent = data.weddingDate;
+  document.getElementById("wedding-year").textContent = data.weddingYear;
+  document.getElementById("wedding-time").textContent = data.weddingTime;
+  document.getElementById("venue-name").textContent = data.venueName;
+  document.getElementById("venue-address").innerHTML = nl2br(shortAddr);
+
+  const showcaseName = document.getElementById("venue-showcase-name");
+  const showcaseMeta = document.getElementById("venue-showcase-meta");
+  if (showcaseName) showcaseName.textContent = data.venueName;
+  if (showcaseMeta) showcaseMeta.textContent = `27 September ${data.weddingYear} · 10:30 AM`;
+
+  const rsvpLabelEl = document.getElementById("rsvp-label");
+  if (rsvpLabelEl) rsvpLabelEl.textContent = data.rsvpLabel;
+  const emailEl = document.getElementById("rsvp-contact");
+  if (emailEl) {
+    emailEl.textContent = data.rsvpContact;
+    emailEl.href = `mailto:${data.rsvpContact}`;
+  }
+  const phoneEl = document.getElementById("rsvp-phone");
+  if (phoneEl) {
+    phoneEl.textContent = data.rsvpPhone;
+    phoneEl.href = `tel:${(data.rsvpPhone || "").replace(/\s/g, "")}`;
+  }
+
+  document.getElementById("detail-venue").innerHTML = nl2br(data.detailVenue);
+  document.getElementById("detail-time").innerHTML = nl2br(data.detailTime);
+  document.getElementById("detail-dress").textContent = data.detailDress;
+  document.getElementById("detail-reception").innerHTML = nl2br(data.detailReception);
+
+  document.getElementById("map-venue").textContent = data.mapVenue;
+  document.getElementById("map-address").textContent = shortAddr.replace(/\n/g, ", ");
+
+  const lat = parseFloat(data.mapLatitude);
+  const lng = parseFloat(data.mapLongitude);
+  const directionsEl = document.getElementById("map-directions");
+  if (data.mapGoogleUrl) {
+    directionsEl.href = data.mapGoogleUrl;
+  } else if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+    directionsEl.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  } else {
+    directionsEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsAddress(data))}`;
+  }
+
+  const countdownUntil = document.getElementById("countdown-until");
+  if (countdownUntil) countdownUntil.textContent = data.countdownSubtitle || "until our Nikah";
+
+  const setText = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val) el.textContent = val;
+  };
+  setText("envelope-bismillah", data.bismillah);
+  setText("envelope-bismillah-en", data.bismillahEnglish);
+  setText("hero-bismillah", data.bismillah);
+  setText("invitation-dua", data.invitationDua);
+  setText("footer-dua", data.footerDua);
+  setText("footer-thanks", data.footerThanks);
+
+  document.getElementById("gallery-caption-1").textContent = data.galleryCaption1;
+  document.getElementById("gallery-caption-2").textContent = data.galleryCaption2;
+  document.getElementById("gallery-caption-3").textContent = data.galleryCaption3;
+  document.getElementById("gallery-caption-4").textContent = data.galleryCaption4;
+
+  // Hero media: update video source & poster
+  try {
+    const video = document.querySelector('.hero-video');
+    if (video) {
+      const srcNode = video.querySelector('source');
+      if (data.heroVideo) {
+        if (srcNode) srcNode.src = data.heroVideo;
+        else video.insertAdjacentHTML('afterbegin', `<source src="${data.heroVideo}" type="video/mp4">`);
+      }
+      if (data.heroPoster) video.setAttribute('poster', data.heroPoster);
+      const fallback = video.querySelector('.hero-video-fallback');
+      if (fallback) fallback.src = data.heroPoster || fallback.src;
+      video.load && video.load();
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  document.title = `Wedding ${couple}`;
+
+  const isoInput = document.getElementById("countdown-iso");
+  if (isoInput && data.countdownISO) isoInput.value = data.countdownISO;
+}
+
+function renderMap(data) {
+  const el = document.getElementById("map-canvas");
+  if (!el) return;
+  const lat = parseFloat(data.mapLatitude) || 12.96913;
+  const lng = parseFloat(data.mapLongitude) || 80.14939;
+  const pad = 0.008;
+  const bbox = `${lng - pad},${lat - pad},${lng + pad},${lat + pad}`;
+  el.innerHTML = `<iframe title="Venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+    src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}"></iframe>`;
+}
+
+let countdownTimer = null;
+
+function resolveCountdownTarget(isoString) {
+  if (isoString) {
+    const parsed = new Date(isoString).getTime();
+    if (!Number.isNaN(parsed)) return parsed;
+  }
+  return new Date(2026, 8, 28, 10, 30, 0).getTime();
+}
+
+function startCountdown(isoString) {
+  const target = resolveCountdownTarget(isoString);
+  const daysEl = document.getElementById("cd-days");
+  const hoursEl = document.getElementById("cd-hours");
+  const minutesEl = document.getElementById("cd-minutes");
+  const secondsEl = document.getElementById("cd-seconds");
+  if (!daysEl) return;
+
+  function tick() {
+    const diff = Math.max(0, target - Date.now());
+    daysEl.textContent = String(Math.floor(diff / 86400000)).padStart(2, "0");
+    hoursEl.textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, "0");
+    minutesEl.textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
+    secondsEl.textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
+  }
+
+  tick();
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(tick, 1000);
+}
+
+const music = {
+  audio: null,
+  toggle: null,
+  targetVolume: 0.55,
+  fadeTimer: null,
+  init() {
+    this.audio = document.getElementById("bg-music");
+    this.toggle = document.getElementById("music-toggle");
+    if (!this.audio || !this.toggle) return;
+    this.audio.volume = 0;
+    this.toggle.addEventListener("click", () => {
+      if (this.audio.paused) this.play();
+      else this.pause();
+    });
+  },
+  fadeTo(target, onDone) {
+    if (!this.audio) return;
+    if (this.fadeTimer) clearInterval(this.fadeTimer);
+    const step = (target - this.audio.volume) / 24;
+    this.fadeTimer = setInterval(() => {
+      let v = this.audio.volume + step;
+      if ((step > 0 && v >= target) || (step < 0 && v <= target)) {
+        v = target;
+        clearInterval(this.fadeTimer);
+        this.fadeTimer = null;
+        if (onDone) onDone();
+      }
+      this.audio.volume = Math.min(1, Math.max(0, v));
+    }, 60);
+  },
+  play() {
+    if (!this.audio) return;
+    const p = this.audio.play();
+    const onPlaying = () => {
+      this.toggle?.classList.add("playing");
+      this.toggle?.setAttribute("aria-pressed", "true");
+      this.fadeTo(this.targetVolume);
+    };
+    if (p && typeof p.then === "function") {
+      p.then(onPlaying).catch(() => {
+        this.toggle?.classList.remove("playing");
+        this.toggle?.setAttribute("aria-pressed", "false");
+      });
+    } else {
+      onPlaying();
+    }
+  },
+  pause() {
+    if (!this.audio) return;
+    this.fadeTo(0, () => this.audio.pause());
+    this.toggle?.classList.remove("playing");
+    this.toggle?.setAttribute("aria-pressed", "false");
+  },
+};
+
+function openInvitation() {
+  document.getElementById("envelope-overlay")?.classList.add("is-open");
+  document.body.classList.add("invitation-open");
+  sessionStorage.setItem("invitationOpened", "1");
+  music.play();
+}
+
+function initEnvelope() {
+  if (sessionStorage.getItem("invitationOpened") === "1") {
+    document.getElementById("envelope-overlay")?.classList.add("is-open");
+    document.body.classList.add("invitation-open");
+    return;
+  }
+  document.getElementById("open-invite-btn")?.addEventListener("click", openInvitation);
+}
+
+function initScrollReveal() {
+  document.querySelectorAll(".section-padding, .card-elegant, .gallery-item, .divider-ornament")
+    .forEach((n) => {
+      n.classList.add("reveal");
+      new IntersectionObserver(
+        (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("visible")),
+        { threshold: 0.12 }
+      ).observe(n);
+    });
+}
+
+function fillAdminForm(data) {
+  const fields = [
+    ["edit-bride-name", data.brideName],
+    ["edit-groom-name", data.groomName],
+    ["edit-invite-label", data.inviteLabel],
+    ["edit-invite-text", data.inviteText],
+    ["edit-wedding-date", data.weddingDate],
+    ["edit-wedding-year", data.weddingYear],
+    ["edit-wedding-time", data.weddingTime],
+    ["edit-countdown-iso", data.countdownISO],
+    ["edit-rsvp-label", data.rsvpLabel],
+    ["edit-rsvp-contact", data.rsvpContact],
+    ["edit-rsvp-phone", data.rsvpPhone],
+    ["edit-venue-name", data.venueName],
+    ["edit-venue-address", data.venueAddress],
+    ["edit-detail-venue", data.detailVenue],
+    ["edit-detail-time", data.detailTime],
+    ["edit-detail-dress", data.detailDress],
+    ["edit-detail-reception", data.detailReception],
+    ["edit-map-venue", data.mapVenue],
+    ["edit-map-directions-address", data.mapDirectionsAddress],
+    ["edit-map-latitude", data.mapLatitude],
+    ["edit-map-longitude", data.mapLongitude],
+    ["edit-gallery-caption-1", data.galleryCaption1],
+    ["edit-gallery-caption-2", data.galleryCaption2],
+    ["edit-gallery-caption-3", data.galleryCaption3],
+    ["edit-gallery-caption-4", data.galleryCaption4],
+    ["edit-hero-video", data.heroVideo],
+    ["edit-hero-poster", data.heroPoster],
+  ];
+  fields.forEach(([id, val]) => {
+    const node = document.getElementById(id);
+    if (node) node.value = val ?? "";
+  });
+}
+
+function collectFormData() {
+  return {
+    brideName: document.getElementById("edit-bride-name").value.trim(),
+    groomName: document.getElementById("edit-groom-name").value.trim(),
+    inviteLabel: document.getElementById("edit-invite-label").value.trim(),
+    inviteText: document.getElementById("edit-invite-text").value.trim(),
+    weddingDate: document.getElementById("edit-wedding-date").value.trim(),
+    weddingYear: document.getElementById("edit-wedding-year").value.trim(),
+    weddingTime: document.getElementById("edit-wedding-time").value.trim(),
+    countdownISO: document.getElementById("edit-countdown-iso").value.trim(),
+    rsvpLabel: document.getElementById("edit-rsvp-label").value.trim(),
+    rsvpContact: document.getElementById("edit-rsvp-contact").value.trim(),
+    rsvpPhone: document.getElementById("edit-rsvp-phone").value.trim(),
+    venueName: document.getElementById("edit-venue-name").value.trim(),
+    venueAddress: document.getElementById("edit-venue-address").value.trim(),
+    detailVenue: document.getElementById("edit-detail-venue").value.trim(),
+    detailTime: document.getElementById("edit-detail-time").value.trim(),
+    detailDress: document.getElementById("edit-detail-dress").value.trim(),
+    detailReception: document.getElementById("edit-detail-reception").value.trim(),
+    mapVenue: document.getElementById("edit-map-venue").value.trim(),
+    mapDirectionsAddress: document.getElementById("edit-map-directions-address").value.trim(),
+    mapLatitude: document.getElementById("edit-map-latitude").value.trim(),
+    mapLongitude: document.getElementById("edit-map-longitude").value.trim(),
+    galleryCaption1: document.getElementById("edit-gallery-caption-1").value.trim(),
+    galleryCaption2: document.getElementById("edit-gallery-caption-2").value.trim(),
+    galleryCaption3: document.getElementById("edit-gallery-caption-3").value.trim(),
+    galleryCaption4: document.getElementById("edit-gallery-caption-4").value.trim(),
+    heroVideo: document.getElementById("edit-hero-video").value.trim(),
+    heroPoster: document.getElementById("edit-hero-poster").value.trim(),
+  };
+}
+
+function openAdmin() {
+  fillAdminForm(loadData());
+  document.getElementById("admin-panel").hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeAdmin() {
+  document.getElementById("admin-panel").hidden = true;
+  document.body.style.overflow = "";
+}
+
+function switchTab(tabName, btn) {
+  document.querySelectorAll(".tab-content").forEach((t) => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+  document.getElementById(`${tabName}-tab`)?.classList.add("active");
+  btn?.classList.add("active");
+}
+
+function saveChanges() {
+  const data = { ...collectFormData(), _savedFromEditor: true };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  updateDisplay(data);
+  renderMap(data);
+  startCountdown(data.countdownISO);
+  showNotification("Saved!");
+  closeAdmin();
+}
+
+function resetToConfigFile() {
+  localStorage.removeItem(STORAGE_KEY);
+  const data = mergeNonEmpty(getDefaultConfig(), readFromPage());
+  updateDisplay(data);
+  renderMap(data);
+  startCountdown(data.countdownISO);
+  fillAdminForm(data);
+  showNotification("Reset to config.js & index.html.");
+}
+
+function downloadConfig() {
+  const blob = new Blob([JSON.stringify(loadData(), null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "invitation-config.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function showNotification(message) {
+  const n = document.createElement("div");
+  n.className = "notification";
+  n.textContent = message;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 3000);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const data = loadData();
+  updateDisplay(data);
+  renderMap(data);
+  startCountdown(data.countdownISO);
+  music.init();
+  initEnvelope();
+  initScrollReveal();
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      navLinks.classList.toggle('collapsed', !isOpen);
+    });
+    // close nav on link click
+    navLinks.querySelectorAll('.nav-link').forEach((l) => l.addEventListener('click', () => {
+      navLinks.classList.remove('open'); navLinks.classList.add('collapsed');
+    }));
+  }
+
+  // Lightbox for gallery images
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  const lbCaption = document.getElementById('lightbox-caption');
+  function openLightbox(src, caption, alt) {
+    if (!lightbox) return;
+    lbImg.src = src;
+    lbImg.alt = alt || '';
+    lbCaption.textContent = caption || '';
+    lightbox.classList.remove('hidden');
+    lightbox.setAttribute('aria-hidden', 'false');
+  }
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.classList.add('hidden');
+    lightbox.setAttribute('aria-hidden', 'true');
+    lbImg.src = '';
+    lbCaption.textContent = '';
+  }
+  document.querySelectorAll('.gallery-img').forEach((img) => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', (e) => {
+      const src = img.src;
+      const fig = img.closest('figure');
+      const caption = fig?.querySelector('figcaption')?.textContent || img.alt || '';
+      openLightbox(src, caption, img.alt || '');
+    });
+  });
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox || e.target === lbImg) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+  document.getElementById("admin-open-btn")?.addEventListener("click", openAdmin);
+  document.getElementById("admin-close-btn")?.addEventListener("click", closeAdmin);
+  document.getElementById("save-btn")?.addEventListener("click", saveChanges);
+  document.getElementById("download-btn")?.addEventListener("click", downloadConfig);
+  document.getElementById("reset-config-btn")?.addEventListener("click", resetToConfigFile);
+  document.getElementById("admin-panel")?.addEventListener("click", (e) => {
+    if (e.target.id === "admin-panel") closeAdmin();
+  });
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab, btn));
+  });
+  document.querySelectorAll('.nav-link[href^="#"]').forEach((link) => {
+    link.addEventListener("click", (e) => {
+      const href = link.getAttribute("href");
+      if (!href || href === "#") return;
+      e.preventDefault();
+      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === "A") {
+      e.preventDefault();
+      const panel = document.getElementById("admin-panel");
+      panel.hidden ? openAdmin() : closeAdmin();
+    }
+  });
+});
