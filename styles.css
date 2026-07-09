@@ -1,16 +1,18 @@
 /* Premium Elegante — https://premiumelegante.thedigitalyes.com/ */
 :root {
-    --background: hsl(40, 24%, 95%);
-    --foreground: hsl(33, 47%, 35%);
-    --card: hsl(30, 20%, 92%);
-    --border: hsl(40, 25%, 80%);
-    --gold: hsl(38, 43%, 60%);
-    --gold-dark: hsl(38, 43%, 40%);
-    --burgundy: hsl(25, 49%, 15%);
+    /* Core theme — navy #002f5e / rgb(0,47,94) with pale white text */
+    --background: hsl(210, 100%, 18%);
+    --background-deep: hsl(210, 100%, 11%);
+    --foreground: hsl(210, 40%, 93%);
+    --card: hsl(210, 55%, 25%);
+    --border: hsl(210, 35%, 55%);
+    --gold: hsl(210, 30%, 82%);
+    --gold-dark: hsl(210, 45%, 96%);
+    --burgundy: hsl(210, 100%, 14%);
     --font-script: "Great Vibes", cursive;
     --font-body: "Cormorant Garamond", Georgia, serif;
-    --shadow-soft: 0 2px 15px -3px rgba(59, 38, 19, 0.1), 0 4px 6px -2px rgba(59, 38, 19, 0.05);
-    --shadow-elegant: 0 10px 40px -10px rgba(59, 38, 19, 0.15), 0 4px 15px -3px rgba(59, 38, 19, 0.08);
+    --shadow-soft: 0 2px 15px -3px rgba(0, 15, 35, 0.35), 0 4px 6px -2px rgba(0, 15, 35, 0.25);
+    --shadow-elegant: 0 10px 40px -10px rgba(0, 12, 30, 0.5), 0 4px 15px -3px rgba(0, 12, 30, 0.35);
     --radius: 0.5rem;
     --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -70,7 +72,8 @@ body.invitation-open .site-header {
     align-items: center;
     justify-content: center;
     background: var(--background);
-    transition: opacity 0.8s ease, visibility 0.8s ease;
+    perspective: 1400px;
+    transition: opacity 0.9s ease 0.55s, visibility 0.9s ease 0.55s;
 }
 
 .envelope-overlay.is-open {
@@ -84,7 +87,7 @@ body.invitation-open .site-header {
     padding: 3rem 2.5rem;
     max-width: 420px;
     border: 1px solid var(--border);
-    background: hsl(var(--card) / 0.9);
+    background: var(--card);
     box-shadow: var(--shadow-elegant);
     position: relative;
 }
@@ -93,11 +96,22 @@ body.invitation-open .site-header {
     position: absolute;
     top: -1px;
     left: 50%;
-    transform: translateX(-50%);
-    border-left: 140px solid transparent;
-    border-right: 140px solid transparent;
-    border-top: 70px solid hsl(38, 43%, 55%);
-    opacity: 0.35;
+    width: 0;
+    height: 0;
+    transform: translateX(-50%) rotateX(0deg);
+    transform-origin: top center;
+    border-left: 220px solid transparent;
+    border-right: 220px solid transparent;
+    border-top: 96px solid hsl(210, 55%, 30%);
+    opacity: 0.4;
+    z-index: 3;
+    pointer-events: none;
+    transition: transform 0.7s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.6s ease;
+}
+
+.envelope-overlay.is-open .envelope-flap {
+    transform: translateX(-50%) rotateX(-165deg);
+    opacity: 0;
 }
 
 .envelope-label {
@@ -131,7 +145,7 @@ body.invitation-open .site-header {
 
 .envelope-btn:hover {
     background: var(--gold-dark);
-    color: hsl(50, 52%, 96%);
+    color: var(--background);
 }
 
 .site-header {
@@ -186,6 +200,35 @@ body.invitation-open .site-header {
     color: var(--gold);
 }
 
+.nav-link.is-active {
+    color: var(--gold-dark);
+    position: relative;
+}
+
+.nav-link.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.35rem;
+    height: 1px;
+    background: var(--gold);
+    transform-origin: center;
+    animation: navUnderline 0.45s ease;
+}
+
+@keyframes navUnderline {
+    from {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+}
+
 .nav-edit {
     padding: 0.35rem 0.75rem;
     border: 1px solid var(--gold) !important;
@@ -211,7 +254,7 @@ body.invitation-open .site-header {
     right: 1rem;
     top: 64px;
     flex-direction: column;
-    background: hsl(var(--card));
+    background: var(--card);
     padding: 1rem;
     border-radius: 6px;
     box-shadow: var(--shadow-elegant);
@@ -258,7 +301,7 @@ body.invitation-open .site-header {
     text-align: center;
     font-style: italic;
     font-size: 1rem;
-    color: hsl(25, 20%, 35%);
+    color: hsl(210, 28%, 82%);
     margin-bottom: 2.5rem;
 }
 
@@ -290,16 +333,17 @@ body.invitation-open .site-header {
 .hero {
     position: relative;
     text-align: center;
-    padding-top: 4rem;
-    min-height: 70vh;
+    /* Full-bleed, full-height first section (overrides .section-padding width cap) */
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 4rem 1.5rem;
+    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-/* Hero video background */
-.hero {
     overflow: hidden;
 }
 
@@ -310,7 +354,7 @@ body.invitation-open .site-header {
     height: 100%;
     object-fit: cover;
     object-position: center;
-    opacity: 0.55;
+    opacity: 0.62;
     filter: saturate(0.95) brightness(0.98);
     z-index: 0;
     pointer-events: none;
@@ -318,7 +362,7 @@ body.invitation-open .site-header {
 
 .hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 /* Fallback image shown when <video> isn't supported */
@@ -361,7 +405,7 @@ body.invitation-open .site-header {
     font-size: 0.72rem;
     letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: hsl(25, 20%, 40%);
+    color: hsl(210, 28%, 82%);
     margin-bottom: 1.25rem;
 }
 
@@ -433,7 +477,7 @@ body.invitation-open .site-header {
     margin-top: 1rem;
     font-style: italic;
     font-size: 0.95rem;
-    color: hsl(25, 20%, 40%);
+    color: hsl(210, 28%, 82%);
 }
 
 .venue-showcase-section {
@@ -446,7 +490,7 @@ body.invitation-open .site-header {
     margin: 0 auto;
     text-align: center;
     padding: 3rem 2.5rem 2.5rem;
-    background: #fff;
+    background: var(--card);
 }
 
 .venue-illustration {
@@ -487,8 +531,17 @@ body.invitation-open .site-header {
 .countdown-item {
     padding: 1.5rem 0.75rem;
     border: 1px solid hsl(var(--border) / 0.5);
-    background: hsl(var(--card) / 0.8);
+    background: var(--card);
     box-shadow: var(--shadow-soft);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    cursor: default;
+}
+
+.countdown-item.is-hovered,
+.countdown-item:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: var(--shadow-elegant);
+    border-color: var(--gold);
 }
 
 .countdown-num {
@@ -497,6 +550,26 @@ body.invitation-open .site-header {
     font-size: clamp(2rem, 6vw, 3rem);
     color: var(--gold);
     line-height: 1;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.countdown-num.tick {
+    animation: countdownPulse 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes countdownPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    35% {
+        transform: scale(1.14);
+        color: var(--gold-dark);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .countdown-label {
@@ -509,8 +582,8 @@ body.invitation-open .site-header {
 
 .card-elegant {
     border-radius: calc(var(--radius) - 2px);
-    border: 1px solid hsl(40, 25%, 80% / 0.5);
-    background: hsl(var(--card) / 0.85);
+    border: 1px solid var(--border);
+    background: var(--card);
     padding: 2rem;
     box-shadow: var(--shadow-soft);
     transition: box-shadow var(--transition), transform var(--transition);
@@ -525,6 +598,26 @@ body.invitation-open .site-header {
     max-width: 520px;
     margin: 0 auto;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.invitation-card::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: linear-gradient(120deg, transparent 42%, hsl(210, 60%, 90% / 0.14) 50%, transparent 58%);
+    transform: translateX(-120%);
+    transition: transform 1.1s ease;
+    pointer-events: none;
+}
+
+.invitation-section.is-visible .invitation-card::before {
+    transform: translateX(120%);
+}
+
+.invitation-card:hover {
+    border-color: hsl(210, 40%, 75% / 0.7);
 }
 
 .card-eyebrow {
@@ -617,6 +710,23 @@ body.invitation-open .site-header {
 
 .detail-card {
     text-align: center;
+    cursor: pointer;
+}
+
+.detail-card .detail-icon {
+    display: inline-block;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.detail-card:hover .detail-icon,
+.detail-card.is-pressed .detail-icon {
+    transform: rotate(90deg) scale(1.15);
+    color: var(--gold-dark);
+}
+
+.detail-card.is-pressed {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-elegant);
 }
 
 .detail-card h3 {
@@ -640,6 +750,12 @@ body.invitation-open .site-header {
 .map-card {
     overflow: hidden;
     padding: 0;
+    transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.map-section.is-visible .map-card:hover {
+    box-shadow: var(--shadow-elegant);
+    transform: translateY(-3px);
 }
 
 .map-header {
@@ -663,11 +779,19 @@ body.invitation-open .site-header {
     width: 100%;
     height: 320px;
     border-top: 1px solid var(--border);
-    background: #e5e0d6;
+    background: var(--background-deep);
     /* Clip the OpenStreetMap attribution strip ("Report a problem",
        "OpenStreetMap contributors / Make a Donation", "Website and API terms")
        that the embed bakes into the bottom of the iframe. */
     overflow: hidden;
+    transform: scale(0.98);
+    opacity: 0.85;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.9s ease;
+}
+
+.map-section.is-visible .map-canvas {
+    transform: scale(1);
+    opacity: 1;
 }
 
 .map-canvas iframe {
@@ -686,19 +810,25 @@ body.invitation-open .site-header {
     display: inline-block;
     padding: 0.85rem 2rem;
     background: var(--gold-dark);
-    color: hsl(50, 52%, 96%);
+    color: var(--background);
     text-decoration: none;
     font-size: 0.7rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     border: none;
     cursor: pointer;
-    transition: background var(--transition);
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .btn-primary:hover {
     background: var(--gold);
     color: var(--burgundy);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 .gallery-grid {
@@ -713,6 +843,13 @@ body.invitation-open .site-header {
     padding: 0;
     display: flex;
     flex-direction: column;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.gallery-item.is-hovered,
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-elegant);
 }
 
 .gallery-item figcaption {
@@ -720,26 +857,38 @@ body.invitation-open .site-header {
     text-align: center;
     font-style: italic;
     font-size: 0.9rem;
+    transition: color var(--transition);
 }
 
-/* Uniform square frame for every story photo. object-fit: cover crops each
-   4:3 source to a square; anchoring to the top keeps the couple's heads in
-   view, and the per-image horizontal offsets below re-centre each couple. */
+.gallery-item.is-hovered figcaption,
+.gallery-item:hover figcaption {
+    color: var(--gold-dark);
+}
+
+/* Uniform portrait frame for every story photo. The new illustrations are
+   portrait (~2:3 / 3:4), so a 3:4 frame with object-fit: cover shows the
+   couple centred and fills the box cleanly on every screen size. */
 .gallery-img {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
-    object-position: center top;
+    object-position: center;
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), filter 0.65s ease;
 }
 
-/* The couple sits in a different spot in each illustration, so each photo
-   gets its own horizontal crop position to bring the couple to the centre. */
-#gallery-img-1 { object-position: 87% top; }
-#gallery-img-2 { object-position: 23% top; }
-#gallery-img-3 { object-position: 89% top; }
-#gallery-img-4 { object-position: 73% top; }
+.gallery-item.is-hovered .gallery-img,
+.gallery-item:hover .gallery-img {
+    transform: scale(1.08);
+    filter: saturate(1.05);
+}
+
+/* Fine-tune the crop focus per illustration so the couple stays centred. */
+#gallery-img-1 { object-position: center; }
+#gallery-img-2 { object-position: center; }
+#gallery-img-3 { object-position: center; }
+#gallery-img-4 { object-position: center top; }
 
 /* Lightbox */
 .lightbox {
@@ -750,6 +899,12 @@ body.invitation-open .site-header {
     justify-content: center;
     background: rgba(8, 6, 4, 0.7);
     z-index: 1200;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.lightbox:not(.hidden) {
+    opacity: 1;
 }
 
 .lightbox.hidden {
@@ -761,6 +916,12 @@ body.invitation-open .site-header {
     max-height: 92vh;
     background: transparent;
     padding: 0.5rem;
+    transform: scale(0.94);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lightbox:not(.hidden) .lightbox-content {
+    transform: scale(1);
 }
 
 .lightbox-content img {
@@ -792,7 +953,7 @@ body.invitation-open .site-header {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, hsl(50, 45%, 88%), hsl(38, 35%, 75%));
+    background: linear-gradient(160deg, hsl(210, 55%, 30%), hsl(210, 60%, 20%));
     color: var(--foreground);
     font-size: 0.8rem;
     letter-spacing: 0.1em;
@@ -802,14 +963,14 @@ body.invitation-open .site-header {
 .gallery-hint {
     text-align: center;
     font-size: 0.85rem;
-    color: hsl(25, 20%, 40%);
+    color: hsl(210, 28%, 82%);
     margin: -1.5rem auto 2rem;
     max-width: 520px;
     padding: 0 1rem;
 }
 
 .gallery-hint code {
-    background: hsl(var(--card));
+    background: var(--card);
     padding: 2px 6px;
     font-size: 0.8em;
 }
@@ -834,7 +995,7 @@ body.invitation-open .site-header {
 .islamic-blessing {
     font-style: italic;
     font-size: 0.95rem;
-    color: hsl(25, 20%, 38%);
+    color: hsl(210, 28%, 82%);
     margin: 1.25rem 0 0;
     padding-top: 1rem;
     border-top: 1px solid var(--border);
@@ -875,12 +1036,111 @@ body.invitation-open .site-header {
 .reveal {
     opacity: 0;
     transform: translateY(24px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.8s ease var(--reveal-delay, 0s), transform 0.8s ease var(--reveal-delay, 0s);
 }
 
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Section scroll-in animations */
+.section-animate .reveal-item {
+    opacity: 0;
+    transform: translateY(36px);
+    transition:
+        opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+}
+
+.section-animate .reveal-item.reveal-from-left {
+    transform: translateX(-36px);
+}
+
+.section-animate .reveal-item.reveal-from-right {
+    transform: translateX(36px);
+}
+
+.section-animate.is-visible .reveal-item {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+}
+
+.section-animate .section-title.reveal-item {
+    transform: translateY(28px) scale(0.96);
+}
+
+.section-animate.is-visible .section-title.reveal-item {
+    transform: translateY(0) scale(1);
+}
+
+/* ---- Section-specific motion: opening, dropping, falling ---- */
+
+/* Countdown — items drop in from above with a soft bounce */
+#countdown.section-animate .reveal-item {
+    transform: translateY(-54px);
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#countdown.section-animate.is-visible .reveal-item {
+    transform: none;
+}
+
+/* Invitation — the card content unfolds / opens */
+#invitation.section-animate .reveal-item {
+    transform: perspective(900px) rotateX(-32deg) translateY(22px);
+    transform-origin: top center;
+}
+
+#invitation.section-animate.is-visible .reveal-item {
+    transform: none;
+}
+
+/* Where we celebrate — cards fall from above with a slight tilt */
+#details.section-animate .detail-card.reveal-item {
+    transform: translateY(-66px) rotate(-4deg);
+}
+
+#details.section-animate.is-visible .detail-card.reveal-item {
+    transform: none;
+}
+
+/* Location — opens up with a gentle scale */
+#location.section-animate .reveal-item {
+    transform: scale(0.9) translateY(26px);
+}
+
+#location.section-animate.is-visible .reveal-item {
+    transform: none;
+}
+
+/* Our Story — photos fall in, alternating tilt */
+#gallery.section-animate .gallery-item.reveal-item {
+    transform: translateY(-74px) rotate(3deg);
+}
+
+#gallery.section-animate .gallery-item.reveal-item:nth-child(even) {
+    transform: translateY(-74px) rotate(-3deg);
+}
+
+#gallery.section-animate.is-visible .gallery-item.reveal-item {
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .section-animate .reveal-item,
+    .reveal,
+    .countdown-num.tick,
+    .nav-link.is-active::after,
+    .lightbox,
+    .lightbox-content,
+    .map-canvas {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
 }
 
 .admin-panel {
@@ -900,7 +1160,8 @@ body.invitation-open .site-header {
 }
 
 .admin-content {
-    background: #fff;
+    background: var(--card);
+    color: var(--foreground);
     width: 100%;
     max-width: 520px;
     border: 1px solid var(--border);
@@ -914,7 +1175,7 @@ body.invitation-open .site-header {
     align-items: center;
     padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--border);
-    background: hsl(var(--card));
+    background: var(--card);
 }
 
 .admin-header h2 {
@@ -991,7 +1252,13 @@ body.invitation-open .site-header {
     border: 1px solid var(--border);
     font-family: var(--font-body);
     font-size: 0.9rem;
-    background: var(--background);
+    background: var(--background-deep);
+    color: var(--foreground);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: hsl(210, 28%, 70%);
 }
 
 .form-row {
@@ -1013,7 +1280,8 @@ body.invitation-open .site-header {
     min-width: 100px;
     padding: 0.65rem;
     border: 1px solid var(--border);
-    background: var(--background);
+    background: var(--background-deep);
+    color: var(--foreground);
     font-family: var(--font-body);
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -1025,8 +1293,9 @@ body.invitation-open .site-header {
     top: 1rem;
     right: 1rem;
     padding: 0.85rem 1.25rem;
-    background: var(--gold-dark);
-    color: #fff;
+    background: var(--card);
+    color: var(--foreground);
+    border: 1px solid var(--border);
     z-index: 3000;
     font-size: 0.9rem;
     box-shadow: var(--shadow-elegant);
@@ -1035,11 +1304,6 @@ body.invitation-open .site-header {
 @media (max-width: 600px) {
     .countdown-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    /* hide hero video on small screens to save bandwidth */
-    .hero-video {
-        display: none;
     }
 
     .details-grid {
@@ -1056,7 +1320,13 @@ body.invitation-open .site-header {
 
     .hero {
         padding-top: 6rem;
-        min-height: 60vh;
+        min-height: 100vh;
+        min-height: 100svh;
+    }
+
+    /* Keep the hero video visible and covering the full screen on mobile */
+    .hero-video {
+        display: block;
     }
 }
 
@@ -1068,10 +1338,8 @@ body.invitation-open .site-header {
 .envelope-overlay {
     background-color: var(--background);
     background-image:
-        radial-gradient(circle at 50% 20%, hsl(40, 35%, 97%) 0%, hsl(40, 24%, 93%) 60%, hsl(38, 28%, 86%) 100%),
-        url("assets/images/white-textured-paper-KasY8RAJ.png");
-    background-size: cover, 420px;
-    background-blend-mode: normal, multiply;
+        radial-gradient(circle at 50% 18%, hsl(210, 90%, 26%) 0%, hsl(210, 100%, 18%) 55%, hsl(210, 100%, 11%) 100%);
+    background-size: cover;
     padding: 1.5rem;
 }
 
@@ -1083,10 +1351,11 @@ body.invitation-open .site-header {
     border: 1px solid var(--gold);
     outline: 1px solid var(--border);
     outline-offset: 6px;
-    background: hsl(50, 40%, 98%);
+    background: var(--card);
     box-shadow: var(--shadow-elegant);
     position: relative;
     overflow: hidden;
+    perspective: 1000px;
     animation: cardRise 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -1118,33 +1387,75 @@ body.invitation-open .site-header {
     opacity: 0.5;
 }
 
+/* --- Luxury wax seal stamp (M&F) --- */
+.envelope-wax {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 1.6rem;
+    z-index: 4;
+    filter: drop-shadow(0 7px 12px rgba(0, 10, 28, 0.55));
+    animation: sealPulse 4s ease-in-out infinite;
+    transition: transform 0.6s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.55s ease;
+}
+
+.envelope-overlay.is-open .envelope-wax {
+    transform: translateY(-14px) scale(1.18) rotate(-9deg);
+    opacity: 0;
+}
+
 .envelope-seal {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 1.25rem;
-    border-radius: 50%;
+    position: relative;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at 35% 30%, var(--gold) 0%, var(--gold-dark) 70%, hsl(38, 43%, 32%) 100%);
-    color: hsl(50, 52%, 96%);
-    box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.35), 0 4px 10px rgba(59, 38, 19, 0.25);
-    position: relative;
-    animation: sealPulse 3.5s ease-in-out infinite;
+    color: hsl(210, 45%, 92%);
+    /* irregular wax blob edge */
+    border-radius: 47% 53% 51% 49% / 49% 47% 53% 51%;
+    background:
+        radial-gradient(circle at 34% 28%, hsl(210, 72%, 44%) 0%, hsl(210, 85%, 27%) 45%, hsl(210, 100%, 14%) 100%);
+    box-shadow:
+        inset 0 3px 8px rgba(255, 255, 255, 0.3),
+        inset 0 -7px 14px rgba(0, 8, 22, 0.6),
+        0 2px 5px rgba(0, 10, 28, 0.5);
 }
 
+/* embossed inner ring */
+.envelope-seal::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border-radius: inherit;
+    border: 2px solid hsl(210, 60%, 60% / 0.35);
+    box-shadow: inset 0 0 7px rgba(0, 8, 22, 0.55);
+}
+
+/* soft wax highlight */
 .envelope-seal::after {
     content: "";
     position: absolute;
-    inset: 5px;
-    border: 1px dashed hsl(50, 52%, 90% / 0.6);
-    border-radius: 50%;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 68% 74%, rgba(255, 255, 255, 0.14), transparent 42%);
+    pointer-events: none;
 }
 
-.envelope-seal span {
+.seal-monogram {
+    position: relative;
     font-family: var(--font-script);
-    font-size: 1.35rem;
+    font-size: 2.05rem;
     line-height: 1;
+    letter-spacing: 0.01em;
+    color: hsl(210, 40%, 91%);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 -1px 2px rgba(0, 8, 22, 0.6);
+}
+
+.seal-amp {
+    font-size: 0.62em;
+    vertical-align: 0.12em;
+    margin: 0 0.02em;
 }
 
 @keyframes sealPulse {
@@ -1180,7 +1491,7 @@ body.invitation-open .site-header {
 .envelope-subdate {
     font-style: italic;
     font-size: 0.95rem;
-    color: hsl(25, 20%, 40%);
+    color: hsl(210, 28%, 82%);
     margin-bottom: 1.75rem;
 }
 
@@ -1203,7 +1514,7 @@ body.invitation-open .site-header {
     height: 48px;
     border-radius: 50%;
     border: 1px solid var(--gold);
-    background-color: hsl(50, 40%, 98%);
+    background-color: var(--card);
     color: var(--gold-dark);
     cursor: pointer;
     display: flex;
@@ -1219,7 +1530,7 @@ body.invitation-open .site-header {
 }
 
 .music-toggle:hover .music-bars span {
-    background: hsl(50, 52%, 96%);
+    background: var(--background);
 }
 
 .music-bars {
@@ -1270,10 +1581,15 @@ body.invitation-open .site-header {
 
 @media (prefers-reduced-motion: reduce) {
 
-    .envelope-seal,
+    .envelope-wax,
     .music-toggle.playing .music-bars span,
     .envelope-card {
         animation: none;
+    }
+
+    .envelope-flap,
+    .envelope-wax {
+        transition: none;
     }
 }
 
@@ -1294,6 +1610,116 @@ body.invitation-open .site-header {
 .footer-swans {
     margin: 0 auto 1.5rem;
     max-width: 320px;
+}
+
+/* --- Aesthetic white floral accents (white flowers on black → screen blend) --- */
+.floral-accent {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    /* screen blend makes the pure-black background disappear over the navy page */
+    mix-blend-mode: screen;
+}
+
+.hero-floral {
+    width: clamp(160px, 28vw, 320px);
+    height: auto;
+    z-index: 1;
+    opacity: 0.95;
+}
+
+.hero-floral.tl {
+    top: 0;
+    left: 0;
+}
+
+.hero-floral.br {
+    right: 0;
+    bottom: 0;
+    transform: rotate(180deg);
+}
+
+.card-floral {
+    width: clamp(84px, 17vw, 140px);
+    height: auto;
+    z-index: 2;
+    opacity: 0.8;
+}
+
+.card-floral.tl {
+    top: 0;
+    left: 0;
+}
+
+.card-floral.br {
+    right: 0;
+    bottom: 0;
+    transform: rotate(180deg);
+}
+
+.footer-floral-sprig {
+    display: block;
+    width: min(360px, 78vw);
+    height: auto;
+    margin: 0 auto 0.5rem;
+    mix-blend-mode: screen;
+}
+
+/* --- Gentle falling white petals --- */
+.petals {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.petals span {
+    position: absolute;
+    top: -6vh;
+    width: 12px;
+    height: 16px;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.35) 60%, transparent 72%);
+    border-radius: 150% 0 150% 0;
+    opacity: 0;
+    animation-name: petalFall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+}
+
+@keyframes petalFall {
+    0% {
+        transform: translateY(-6vh) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.85;
+    }
+
+    90% {
+        opacity: 0.75;
+    }
+
+    100% {
+        transform: translateY(108vh) translateX(46px) rotate(340deg);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 560px) {
+
+    .petals span {
+        width: 9px;
+        height: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .petals {
+        display: none;
+    }
 }
 
 @media print {

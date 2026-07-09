@@ -258,12 +258,21 @@ function startCountdown(isoString) {
   const secondsEl = document.getElementById("cd-seconds");
   if (!daysEl) return;
 
+  function pulseIfChanged(el, value) {
+    const next = String(value).padStart(2, "0");
+    if (el.textContent === next) return;
+    el.textContent = next;
+    el.classList.remove("tick");
+    void el.offsetWidth;
+    el.classList.add("tick");
+  }
+
   function tick() {
     const diff = Math.max(0, target - Date.now());
-    daysEl.textContent = String(Math.floor(diff / 86400000)).padStart(2, "0");
-    hoursEl.textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, "0");
-    minutesEl.textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
-    secondsEl.textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
+    pulseIfChanged(daysEl, Math.floor(diff / 86400000));
+    pulseIfChanged(hoursEl, Math.floor((diff % 86400000) / 3600000));
+    pulseIfChanged(minutesEl, Math.floor((diff % 3600000) / 60000));
+    pulseIfChanged(secondsEl, Math.floor((diff % 60000) / 1000));
   }
 
   tick();
@@ -342,15 +351,126 @@ function initEnvelope() {
   document.getElementById("open-invite-btn")?.addEventListener("click", openInvitation);
 }
 
-function initScrollReveal() {
-  document.querySelectorAll(".section-padding, .card-elegant, .gallery-item, .divider-ornament")
-    .forEach((n) => {
-      n.classList.add("reveal");
+const SECTION_ANIMATIONS = [
+  {
+    id: "countdown",
+    selectors: ".section-title, .section-subtitle, .countdown-item",
+  },
+  {
+    id: "invitation",
+    selectors:
+      ".section-title, .card-eyebrow, .invite-text, .islamic-blessing, .date-block, .venue-block",
+  },
+  {
+    id: "details",
+    selectors: ".section-title, .section-subtitle, .detail-card",
+  },
+  {
+    id: "location",
+    selectors: ".section-title, .section-subtitle, .map-header, .map-canvas, .map-actions",
+  },
+  {
+    id: "gallery",
+    selectors: ".section-title, .section-subtitle, .gallery-item",
+  },
+];
+
+function initSectionAnimations() {
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const stagger = prefersReduced ? 0 : 0.11;
+
+  SECTION_ANIMATIONS.forEach(({ id, selectors }) => {
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    section.classList.add("section-animate");
+    section.querySelectorAll(selectors).forEach((el, index) => {
+      el.classList.add("reveal-item");
+      el.style.setProperty("--reveal-delay", `${index * stagger}s`);
+      if (el.classList.contains("detail-card")) {
+        el.classList.add(index % 2 === 0 ? "reveal-from-left" : "reveal-from-right");
+      }
+    });
+
+    if (prefersReduced) {
+      section.classList.add("is-visible");
+      return;
+    }
+
+    new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Toggle so sections re-animate (open/close) as they scroll in and out
+          entry.target.classList.toggle("is-visible", entry.isIntersecting);
+        });
+      },
+      { threshold: 0.16, rootMargin: "-8% 0px -12% 0px" }
+    ).observe(section);
+  });
+}
+
+function initDecorReveal() {
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document
+    .querySelectorAll(
+      ".venue-showcase-section, .illustration-section, .divider-ornament, .footer-swans"
+    )
+    .forEach((node, index) => {
+      node.classList.add("reveal");
+      node.style.setProperty("--reveal-delay", `${index * 0.05}s`);
+      if (prefersReduced) {
+        node.classList.add("visible");
+        return;
+      }
       new IntersectionObserver(
         (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("visible")),
         { threshold: 0.12 }
-      ).observe(n);
+      ).observe(node);
     });
+}
+
+function initActiveNav() {
+  const sections = [...document.querySelectorAll("main section[id]")];
+  const navLinks = [...document.querySelectorAll('.nav-link[href^="#"]')];
+  if (!sections.length || !navLinks.length) return;
+
+  const setActive = (id) => {
+    navLinks.forEach((link) => {
+      link.classList.toggle("is-active", link.getAttribute("href") === `#${id}`);
+    });
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible[0]) setActive(visible[0].target.id);
+    },
+    { threshold: [0.2, 0.45, 0.65], rootMargin: "-20% 0px -55% 0px" }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+}
+
+function initInteractiveCards() {
+  document.querySelectorAll(".detail-card").forEach((card) => {
+    card.setAttribute("tabindex", "0");
+    card.addEventListener("click", () => card.classList.toggle("is-pressed"));
+    card.addEventListener("blur", () => card.classList.remove("is-pressed"));
+  });
+
+  document.querySelectorAll(".countdown-item").forEach((item) => {
+    item.addEventListener("mouseenter", () => item.classList.add("is-hovered"));
+    item.addEventListener("mouseleave", () => item.classList.remove("is-hovered"));
+  });
+}
+
+function initGalleryInteractions() {
+  document.querySelectorAll(".gallery-item").forEach((item) => {
+    item.addEventListener("mouseenter", () => item.classList.add("is-hovered"));
+    item.addEventListener("mouseleave", () => item.classList.remove("is-hovered"));
+  });
 }
 
 function fillAdminForm(data) {
@@ -483,7 +603,11 @@ document.addEventListener("DOMContentLoaded", () => {
   startCountdown(data.countdownISO);
   music.init();
   initEnvelope();
-  initScrollReveal();
+  initSectionAnimations();
+  initDecorReveal();
+  initActiveNav();
+  initInteractiveCards();
+  initGalleryInteractions();
 
   // Mobile nav toggle
   const navToggle = document.getElementById('nav-toggle');

@@ -12,7 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Great+Vibes&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=9">
+    <link rel="stylesheet" href="styles.css?v=14">
     <link rel="icon" href="assets/images/venue-cantonment.png">
 
 </head>
@@ -21,6 +21,19 @@
     <input type="hidden" id="countdown-iso" value="2026-09-27T10:30:00+05:30">
 
     <audio id="bg-music" loop preload="auto" src="assets/audio/wedding-background-music.mp3"></audio>
+
+    <div class="petals hidden-until-open" aria-hidden="true">
+        <span style="left:4%;animation-delay:0s;animation-duration:11s"></span>
+        <span style="left:12%;animation-delay:3.5s;animation-duration:14s"></span>
+        <span style="left:21%;animation-delay:6s;animation-duration:12s"></span>
+        <span style="left:33%;animation-delay:1.5s;animation-duration:15s"></span>
+        <span style="left:44%;animation-delay:8s;animation-duration:13s"></span>
+        <span style="left:55%;animation-delay:2.5s;animation-duration:16s"></span>
+        <span style="left:66%;animation-delay:5s;animation-duration:12s"></span>
+        <span style="left:77%;animation-delay:9s;animation-duration:14s"></span>
+        <span style="left:86%;animation-delay:4s;animation-duration:11s"></span>
+        <span style="left:94%;animation-delay:7s;animation-duration:15s"></span>
+    </div>
 
     <div id="envelope-overlay" class="envelope-overlay" aria-hidden="false">
         <div class="envelope-card">
@@ -33,7 +46,9 @@
                 <path d="M60 110 Q30 80 10 60 Q40 70 60 30 Q80 70 110 60 Q90 80 60 110" fill="none"
                     stroke="currentColor" stroke-width=".8" />
             </svg>
-            <div class="envelope-seal" aria-hidden="true"><span>A &amp; F</span></div>
+            <div class="envelope-wax" aria-hidden="true">
+                <div class="envelope-seal"><span class="seal-monogram">M<span class="seal-amp">&amp;</span>F</span></div>
+            </div>
             <p class="bismillah arabic-text" id="envelope-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
             <p class="envelope-label" id="envelope-bismillah-en">In the name of Allah, the Most Gracious, the Most
                 Merciful</p>
@@ -74,6 +89,10 @@
                 <!-- Fallback content for browsers that don't support video -->
                 <img src="assets/images/venue-cantonment-1024.jpg" alt="Venue poster" class="hero-video-fallback">
             </video>
+            <img src="assets/images/corner-black.png?v=2" alt="" aria-hidden="true"
+                class="floral-accent hero-floral tl">
+            <img src="assets/images/corner-black.png?v=2" alt="" aria-hidden="true"
+                class="floral-accent hero-floral br">
             <div class="hero-content">
             <svg class="floral-corner floral-tl" viewBox="0 0 120 120" aria-hidden="true">
                 <path d="M60 10 Q90 40 110 60 Q80 50 60 90 Q40 50 10 60 Q30 40 60 10" fill="none" stroke="currentColor"
@@ -145,6 +164,10 @@
         <section id="invitation" class="section-padding invitation-section">
             <h2 class="section-title">The Invitation</h2>
             <div class="card-elegant invitation-card">
+                <img src="assets/images/corner-black.png?v=2" alt="" aria-hidden="true"
+                    class="floral-accent card-floral tl">
+                <img src="assets/images/corner-black.png?v=2" alt="" aria-hidden="true"
+                    class="floral-accent card-floral br">
                 <p class="card-eyebrow">You are graciously invited</p>
                 <p class="invite-text" id="invite-text">to join us in celebrating our Nikah and Walima, and to share in
                     the joy of this blessed union</p>
@@ -230,38 +253,35 @@
             <p class="section-subtitle">Share in our blessed journey — photos coming soon.</p>
             <div class="gallery-grid">
                 <figure class="gallery-item card-elegant">
-                    <img src="assets/images/photo1-1024.jpg?v=20250618-top"
-                        srcset="assets/images/photo1-480.jpg?v=20250618-top 480w, assets/images/photo1-1024.jpg?v=20250618-top 1024w, assets/images/photo1-2048.jpg?v=20250618-top 2048w, assets/images/photo1-480.webp?v=20250618-top 480w, assets/images/photo1-1024.webp?v=20250618-top 1024w"
-                        sizes="(max-width:600px) 46vw, (max-width:900px) 48vw, 240px" alt="Our Engagement"
-                        class="gallery-img" id="gallery-img-1" loading="lazy" width="640" height="480">
-                    <figcaption id="gallery-caption-1">Our Engagement</figcaption>
-                </figure>
-                <figure class="gallery-item card-elegant">
-                    <img src="assets/images/photo2-1024.jpg?v=20250618-top"
-                        srcset="assets/images/photo2-480.jpg?v=20250618-top 480w, assets/images/photo2-1024.jpg?v=20250618-top 1024w, assets/images/photo2-2048.jpg?v=20250618-top 2048w, assets/images/photo2-480.webp?v=20250618-top 480w, assets/images/photo2-1024.webp?v=20250618-top 1024w"
-                        sizes="(max-width:600px) 46vw, (max-width:900px) 48vw, 240px" alt="A Special Moment"
-                        class="gallery-img" id="gallery-img-2" loading="lazy" width="640" height="480">
-                    <figcaption id="gallery-caption-2">A Special Moment</figcaption>
-                </figure>
-                <figure class="gallery-item card-elegant">
-                    <img src="assets/images/photo3-1024.jpg?v=20250618-top"
-                        srcset="assets/images/photo3-480.jpg?v=20250618-top 480w, assets/images/photo3-1024.jpg?v=20250618-top 1024w, assets/images/photo3-2048.jpg?v=20250618-top 2048w, assets/images/photo3-480.webp?v=20250618-top 480w, assets/images/photo3-1024.webp?v=20250618-top 1024w"
+                    <img src="assets/images/story3.jpg?v=1"
                         sizes="(max-width:600px) 46vw, (max-width:900px) 48vw, 240px" alt="With love"
-                        class="gallery-img" id="gallery-img-3" loading="lazy" width="640" height="480">
+                        class="gallery-img" id="gallery-img-3" loading="lazy" width="682" height="1024">
                     <figcaption id="gallery-caption-3">With love</figcaption>
                 </figure>
                 <figure class="gallery-item card-elegant">
-                    <img src="assets/images/photo4-1024.jpg?v=20250618-top"
-                        srcset="assets/images/photo4-480.jpg?v=20250618-top 480w, assets/images/photo4-1024.jpg?v=20250618-top 1024w, assets/images/photo4-2048.jpg?v=20250618-top 2048w, assets/images/photo4-480.webp?v=20250618-top 480w, assets/images/photo4-1024.webp?v=20250618-top 1024w"
+                    <img src="assets/images/story1.jpg?v=1"
+                        sizes="(max-width:600px) 46vw, (max-width:900px) 48vw, 240px" alt="Our Engagement"
+                        class="gallery-img" id="gallery-img-1" loading="lazy" width="682" height="1024">
+                    <figcaption id="gallery-caption-1">Our Engagement</figcaption>
+                </figure>
+                <figure class="gallery-item card-elegant">
+                    <img src="assets/images/story4.jpg?v=1"
                         sizes="(max-width:600px) 46vw, (max-width:900px) 48vw, 240px" alt="Celebration"
-                        class="gallery-img" id="gallery-img-4" loading="lazy" width="640" height="480">
+                        class="gallery-img" id="gallery-img-4" loading="lazy" width="736" height="1008">
                     <figcaption id="gallery-caption-4">Celebration</figcaption>
+                </figure>
+                <figure class="gallery-item card-elegant">
+                    <img src="assets/images/story2.jpg?v=1"
+                        sizes="(max-width:600px) 46vw, (max-width:900px) 48vw, 240px" alt="A Special Moment"
+                        class="gallery-img" id="gallery-img-2" loading="lazy" width="682" height="1024">
+                    <figcaption id="gallery-caption-2">A Special Moment</figcaption>
                 </figure>
             </div>
         </section>
     </main>
 
     <footer class="footer hidden-until-open" id="site-footer">
+        <img src="assets/images/sprig-black.png?v=2" alt="" aria-hidden="true" class="footer-floral-sprig">
         <img src="assets/images/swans-framed-ByH4RE7t.png" alt="" class="illustration-img decor-swans-img footer-swans"
             loading="lazy" width="320">
         <div class="divider-ornament footer-divider" aria-hidden="true"><span>✦</span></div>
@@ -379,8 +399,8 @@
         </div>
     </div>
 
-    <script src="config.js?v=7"></script>
-    <script src="script.js?v=7"></script>
+    <script src="config.js?v=8"></script>
+    <script src="script.js?v=9"></script>
 </body>
 
 </html>
