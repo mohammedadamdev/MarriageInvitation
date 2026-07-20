@@ -63,10 +63,10 @@ function getDefaultConfig() {
     venueAddress: c.venueAddress || "",
     mapDirectionsAddress:
       c.mapDirectionsAddress ||
-      "Cantonment Board Thirumana Mandapam, GST Road, Pallavaram, Chennai, Tamil Nadu 600043, India",
+      "SS Mahal, 191, Pammal Main Rd, Lakshmi Narayana Nagar, Pammal, Chennai, Tamil Nadu 600075",
     mapVenue: c.mapVenue || c.venueName || "",
-    mapLatitude: c.mapLatitude ?? 12.9691277,
-    mapLongitude: c.mapLongitude ?? 80.1493513,
+    mapLatitude: c.mapLatitude ?? 12.9754,
+    mapLongitude: c.mapLongitude ?? 80.132,
     mapGoogleUrl: c.mapGoogleUrl || "",
     bismillah: c.bismillah || "",
     bismillahEnglish: c.bismillahEnglish || "",
@@ -232,8 +232,8 @@ function updateDisplay(data) {
 function renderMap(data) {
   const el = document.getElementById("map-canvas");
   if (!el) return;
-  const lat = parseFloat(data.mapLatitude) || 12.96913;
-  const lng = parseFloat(data.mapLongitude) || 80.14939;
+  const lat = parseFloat(data.mapLatitude) || 12.9754;
+  const lng = parseFloat(data.mapLongitude) || 80.132;
   const pad = 0.008;
   const bbox = `${lng - pad},${lat - pad},${lng + pad},${lat + pad}`;
   el.innerHTML = `<iframe title="Venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
