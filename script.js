@@ -234,10 +234,9 @@ function renderMap(data) {
   if (!el) return;
   const lat = parseFloat(data.mapLatitude) || 12.9754;
   const lng = parseFloat(data.mapLongitude) || 80.132;
-  const pad = 0.008;
-  const bbox = `${lng - pad},${lat - pad},${lng + pad},${lat + pad}`;
-  el.innerHTML = `<iframe title="Venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-    src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}"></iframe>`;
+  // Keyless Google Maps embed — reliably renders a pinned map without an API key.
+  el.innerHTML = `<iframe title="Venue location map" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+    src="https://www.google.com/maps?q=${lat},${lng}&z=16&hl=en&output=embed"></iframe>`;
 }
 
 let countdownTimer = null;
