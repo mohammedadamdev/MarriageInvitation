@@ -120,10 +120,6 @@ function displayAddress(data) {
   return (data.venueAddress || "").trim();
 }
 
-function directionsAddress(data) {
-  return (data.mapDirectionsAddress || displayAddress(data)).trim();
-}
-
 function nl2br(text) {
   return String(text || "").replace(/\n/g, "<br>");
 }
@@ -174,17 +170,6 @@ function updateDisplay(data) {
 
   document.getElementById("map-venue").textContent = data.mapVenue;
   document.getElementById("map-address").textContent = shortAddr.replace(/\n/g, ", ");
-
-  const lat = parseFloat(data.mapLatitude);
-  const lng = parseFloat(data.mapLongitude);
-  const directionsEl = document.getElementById("map-directions");
-  if (data.mapGoogleUrl) {
-    directionsEl.href = data.mapGoogleUrl;
-  } else if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
-    directionsEl.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-  } else {
-    directionsEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsAddress(data))}`;
-  }
 
   const countdownUntil = document.getElementById("countdown-until");
   if (countdownUntil) countdownUntil.textContent = data.countdownSubtitle || "until our Nikah";
@@ -356,7 +341,7 @@ const SECTION_ANIMATIONS = [
   },
   {
     id: "location",
-    selectors: ".section-title, .section-subtitle, .map-header, .map-actions",
+    selectors: ".section-title, .section-subtitle, .map-header",
   },
   {
     id: "gallery",
