@@ -831,11 +831,17 @@ body.invitation-open .site-header {
 }
 
 .map-preview {
+    position: relative;
+    z-index: 2;
+    display: block;
     width: 100%;
     overflow: hidden;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     background: var(--background-deep);
+    text-decoration: none;
+    cursor: pointer;
+    pointer-events: auto;
 }
 
 .map-preview img {
@@ -844,6 +850,30 @@ body.invitation-open .site-header {
     height: auto;
     aspect-ratio: 40 / 21;
     object-fit: cover;
+    transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.map-preview-label {
+    position: absolute;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%);
+    padding: 0.55rem 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 999px;
+    background: rgba(0, 47, 94, 0.88);
+    color: var(--gold-dark);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: var(--shadow-soft);
+    pointer-events: none;
+}
+
+.map-preview:hover img {
+    transform: scale(1.02);
+    filter: brightness(0.92);
 }
 
 .map-actions {
