@@ -23,7 +23,7 @@ window.INVITATION_CONFIG = {
   mapLatitude: 12.9754,
   mapLongitude: 80.132,
   mapGoogleUrl:
-    "https://www.google.com/maps/search/?api=1&query=SS%20Mahal%20Pammal%2C%20X4GJ%2B4X%2C%20Chennai%2C%20Tamil%20Nadu",
+    "https://www.google.com/maps/dir/?api=1&destination=12.9754,80.132",
   mapVenue: "SS Mahal Pammal",
   rsvpLabel: "Kindly respond by August 1st, 2026",
   rsvpContact: "adamoffical0145@gmail.com",
