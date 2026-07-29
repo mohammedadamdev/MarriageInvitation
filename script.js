@@ -611,6 +611,13 @@ function showNotification(message) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("[data-map-link]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = el.getAttribute("href");
+    });
+  });
+
   const data = loadData();
   updateDisplay(data);
   renderVenueMap(data);
