@@ -214,6 +214,45 @@ function updateDisplay(data) {
   if (isoInput && data.countdownISO) isoInput.value = data.countdownISO;
 }
 
+let venueMap = null;
+
+function renderVenueMap(data) {
+  const mapElement = document.getElementById("venue-map");
+  if (!mapElement) return;
+
+  if (!window.L) {
+    mapElement.textContent = "Interactive map unavailable. Use Open in Google Maps below.";
+    mapElement.classList.add("map-unavailable");
+    return;
+  }
+
+  const latitude = parseFloat(data.mapLatitude) || 12.9754;
+  const longitude = parseFloat(data.mapLongitude) || 80.132;
+
+  if (venueMap) venueMap.remove();
+  mapElement.textContent = "";
+  mapElement.classList.remove("map-unavailable");
+
+  venueMap = window.L.map(mapElement, {
+    center: [latitude, longitude],
+    zoom: 16,
+    scrollWheelZoom: false,
+    zoomControl: true,
+  });
+
+  window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(venueMap);
+
+  window.L.marker([latitude, longitude], {
+    title: data.mapVenue || "SS Mahal Pammal",
+    alt: data.mapVenue || "SS Mahal Pammal",
+  }).addTo(venueMap);
+
+  setTimeout(() => venueMap?.invalidateSize(), 250);
+}
+
 let countdownTimer = null;
 
 function resolveCountdownTarget(isoString) {
@@ -314,6 +353,7 @@ function openInvitation() {
   document.body.classList.add("invitation-open");
   sessionStorage.setItem("invitationOpened", "1");
   music.play();
+  setTimeout(() => venueMap?.invalidateSize(), 700);
 }
 
 function initEnvelope() {
@@ -537,6 +577,7 @@ function saveChanges() {
   const data = { ...collectFormData(), _savedFromEditor: true };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   updateDisplay(data);
+  renderVenueMap(data);
   startCountdown(data.countdownISO);
   showNotification("Saved!");
   closeAdmin();
@@ -546,6 +587,7 @@ function resetToConfigFile() {
   localStorage.removeItem(STORAGE_KEY);
   const data = mergeNonEmpty(getDefaultConfig(), readFromPage());
   updateDisplay(data);
+  renderVenueMap(data);
   startCountdown(data.countdownISO);
   fillAdminForm(data);
   showNotification("Reset to config.js & index.html.");
@@ -571,6 +613,7 @@ function showNotification(message) {
 document.addEventListener("DOMContentLoaded", () => {
   const data = loadData();
   updateDisplay(data);
+  renderVenueMap(data);
   startCountdown(data.countdownISO);
   music.init();
   initEnvelope();
