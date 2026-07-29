@@ -611,15 +611,6 @@ function showNotification(message) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("[data-map-link]").forEach((el) => {
-    el.addEventListener("click", (e) => {
-      e.preventDefault();
-      const url = el.getAttribute("href");
-      // Fall back to the current tab when an in-app browser blocks new tabs.
-      if (!window.open(url, "_blank", "noopener")) window.location.href = url;
-    });
-  });
-
   const data = loadData();
   updateDisplay(data);
   renderVenueMap(data);
