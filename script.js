@@ -229,19 +229,6 @@ function updateDisplay(data) {
   if (isoInput && data.countdownISO) isoInput.value = data.countdownISO;
 }
 
-function renderMap(data) {
-  const el = document.getElementById("map-canvas");
-  if (!el) return;
-  const lat = parseFloat(data.mapLatitude) || 12.9754;
-  const lng = parseFloat(data.mapLongitude) || 80.132;
-  const query = encodeURIComponent(
-    data.mapDirectionsAddress || data.mapVenue || `${lat},${lng}`
-  );
-  // Keyless Google Maps embed — reliably renders a pinned map without an API key.
-  el.innerHTML = `<iframe title="Venue location map" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
-    src="https://www.google.com/maps?q=${query}&z=16&hl=en&output=embed"></iframe>`;
-}
-
 let countdownTimer = null;
 
 function resolveCountdownTarget(isoString) {
@@ -369,7 +356,7 @@ const SECTION_ANIMATIONS = [
   },
   {
     id: "location",
-    selectors: ".section-title, .section-subtitle, .map-header, .map-canvas, .map-actions",
+    selectors: ".section-title, .section-subtitle, .map-header, .map-actions",
   },
   {
     id: "gallery",
@@ -565,7 +552,6 @@ function saveChanges() {
   const data = { ...collectFormData(), _savedFromEditor: true };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   updateDisplay(data);
-  renderMap(data);
   startCountdown(data.countdownISO);
   showNotification("Saved!");
   closeAdmin();
@@ -575,7 +561,6 @@ function resetToConfigFile() {
   localStorage.removeItem(STORAGE_KEY);
   const data = mergeNonEmpty(getDefaultConfig(), readFromPage());
   updateDisplay(data);
-  renderMap(data);
   startCountdown(data.countdownISO);
   fillAdminForm(data);
   showNotification("Reset to config.js & index.html.");
@@ -601,7 +586,6 @@ function showNotification(message) {
 document.addEventListener("DOMContentLoaded", () => {
   const data = loadData();
   updateDisplay(data);
-  renderMap(data);
   startCountdown(data.countdownISO);
   music.init();
   initEnvelope();
