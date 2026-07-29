@@ -888,12 +888,16 @@ body.invitation-open .site-header {
     align-items: center;
     gap: 0.55rem;
     padding-bottom: 0.25rem;
+    border: 0;
     border-bottom: 1px solid var(--gold);
+    background: transparent;
     color: var(--gold-dark);
     text-decoration: none;
+    font-family: var(--font-body);
     font-size: 0.72rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+    cursor: pointer;
     transition: color var(--transition), border-color var(--transition), transform var(--transition);
 }
 

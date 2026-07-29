@@ -13,7 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Great+Vibes&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-    <link rel="stylesheet" href="styles.css?v=20">
+    <link rel="stylesheet" href="styles.css?v=21">
     <link rel="icon" href="assets/images/venue-cantonment.png">
 
 </head>
@@ -237,16 +237,17 @@
                         Pammal, Chennai, Tamil Nadu 600075</p>
                 </div>
                 <div id="venue-map" class="venue-map" aria-label="Interactive map showing SS Mahal Pammal"></div>
-                <div class="map-actions">
-                    <a class="map-external-link"
-                        href="https://www.google.com/maps/dir/?api=1&amp;destination=12.9754%2C80.132">
+                <form class="map-actions" action="https://www.google.com/maps/dir/" method="get">
+                    <input type="hidden" name="api" value="1">
+                    <input type="hidden" name="destination" value="12.9754,80.132">
+                    <button class="map-external-link" type="submit">
                         <span>Open in Google Maps</span>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M14 5h5v5M19 5l-8 8"></path>
                             <path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path>
                         </svg>
-                    </a>
-                </div>
+                    </button>
+                </form>
             </div>
         </section>
 
