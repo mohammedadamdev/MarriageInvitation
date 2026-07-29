@@ -568,7 +568,25 @@ function showNotification(message) {
   setTimeout(() => n.remove(), 3000);
 }
 
+function initMapLinks() {
+  document.querySelectorAll("[data-open-map]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const url = link.href;
+      const newTab = window.open(url, "_blank");
+
+      if (newTab) {
+        newTab.opener = null;
+      } else {
+        // In-app browsers can block new tabs; still open Maps in the current tab.
+        window.location.assign(url);
+      }
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  initMapLinks();
   const data = loadData();
   updateDisplay(data);
   startCountdown(data.countdownISO);
