@@ -810,10 +810,12 @@ body.invitation-open .site-header {
     transition: box-shadow var(--transition), transform var(--transition);
 }
 
-/* No lift here: the card holds an interactive map and button, and moving it
-   under the pointer retriggers hover in a loop. */
+/* The card holds an interactive map and a link. Lifting it on hover shifts the
+   button between press and release, which swallows clicks and taps. */
+.map-card:hover,
 .map-section.is-visible .map-card:hover {
     box-shadow: var(--shadow-elegant);
+    transform: none;
 }
 
 .map-header {

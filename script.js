@@ -195,14 +195,17 @@ function updateDisplay(data) {
     const video = document.querySelector('.hero-video');
     if (video) {
       const srcNode = video.querySelector('source');
-      if (data.heroVideo) {
-        if (srcNode) srcNode.src = data.heroVideo;
+      const currentSrc = srcNode ? srcNode.getAttribute('src') : '';
+      // Only reload when the source really changed; load() rewinds to the
+      // poster and cancels autoplay on mobile.
+      if (data.heroVideo && data.heroVideo !== currentSrc) {
+        if (srcNode) srcNode.setAttribute('src', data.heroVideo);
         else video.insertAdjacentHTML('afterbegin', `<source src="${data.heroVideo}" type="video/mp4">`);
+        video.load && video.load();
       }
       if (data.heroPoster) video.setAttribute('poster', data.heroPoster);
       const fallback = video.querySelector('.hero-video-fallback');
       if (fallback) fallback.src = data.heroPoster || fallback.src;
-      video.load && video.load();
     }
   } catch (e) {
     // ignore
@@ -212,6 +215,30 @@ function updateDisplay(data) {
 
   const isoInput = document.getElementById("countdown-iso");
   if (isoInput && data.countdownISO) isoInput.value = data.countdownISO;
+}
+
+function playHeroVideo() {
+  const video = document.querySelector(".hero-video");
+  if (!video) return;
+  const attempt = video.play();
+  if (attempt && attempt.catch) attempt.catch(() => {});
+}
+
+function initHeroVideo() {
+  const video = document.querySelector(".hero-video");
+  if (!video) return;
+
+  // Mobile browsers only autoplay muted inline video, and iOS needs the
+  // attributes present rather than just the properties.
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+
+  playHeroVideo();
+  video.addEventListener("canplay", playHeroVideo, { once: true });
+  video.addEventListener("loadeddata", playHeroVideo, { once: true });
 }
 
 let venueMap = null;
@@ -353,6 +380,7 @@ function openInvitation() {
   document.body.classList.add("invitation-open");
   sessionStorage.setItem("invitationOpened", "1");
   music.play();
+  playHeroVideo();
   setTimeout(() => venueMap?.invalidateSize(), 700);
 }
 
@@ -616,6 +644,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderVenueMap(data);
   startCountdown(data.countdownISO);
   music.init();
+  initHeroVideo();
   initEnvelope();
   initSectionAnimations();
   initDecorReveal();
