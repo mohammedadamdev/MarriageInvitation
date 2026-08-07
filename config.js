@@ -30,9 +30,9 @@ window.INVITATION_CONFIG = {
   rsvpPhone: "91 9094731328",
   detailVenue:
     "SS Mahal Pammal\n191, Pammal Main Rd, Lakshmi Narayana Nagar, Pammal, Chennai, Tamil Nadu 600075",
-  detailTime: "10:30 AM\nMonday, September 27, 2026",
+  detailTime: "11:30 AM\nSunday, September 20, 2026",
   detailDress: "Whatever you feel comfortable in",
-  detailReception: "Walima feast\nFollowing the Nikah",
+  detailReception: "5:30 PM onwards\nSunday, September 27, 2026",
   galleryCaption1: "Our Engagement",
   galleryCaption2: "A Special Moment",
   galleryCaption3: "With love",
