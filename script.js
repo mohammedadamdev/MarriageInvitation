@@ -58,7 +58,7 @@ function getDefaultConfig() {
     weddingDate: c.weddingDate || "",
     weddingYear: c.weddingYear || "",
     weddingTime: c.weddingTime || "",
-    countdownISO: c.countdownISO || "2026-09-27T10:30:00+05:30",
+    countdownISO: c.countdownISO || "2026-09-27T18:00:00+05:30",
     venueName: c.venueName || "",
     venueAddress: c.venueAddress || "",
     mapDirectionsAddress:
@@ -148,7 +148,7 @@ function updateDisplay(data) {
   const showcaseName = document.getElementById("venue-showcase-name");
   const showcaseMeta = document.getElementById("venue-showcase-meta");
   if (showcaseName) showcaseName.textContent = data.venueName;
-  if (showcaseMeta) showcaseMeta.textContent = `27 September ${data.weddingYear} · 10:30 AM to 6 PM`;
+  if (showcaseMeta) showcaseMeta.textContent = `27 September ${data.weddingYear} · 6 PM`;
 
   const rsvpLabelEl = document.getElementById("rsvp-label");
   if (rsvpLabelEl) rsvpLabelEl.textContent = data.rsvpLabel;

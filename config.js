@@ -13,8 +13,8 @@ window.INVITATION_CONFIG = {
   countdownSubtitle: "until our Walima",
   weddingDate: "Monday, the 27th of September",
   weddingYear: "2026",
-  weddingTime: "half-past 10:30 AM to 6 PM onwards",
-  countdownISO: "2026-09-27T10:30:00+05:30",
+  weddingTime: "6 PM onwards",
+  countdownISO: "2026-09-27T18:00:00+05:30",
   venueName: "SS Mahal Pammal",
   venueAddress:
     "191, Pammal Main Rd, Lakshmi Narayana Nagar\nPammal, Chennai, Tamil Nadu 600075",
