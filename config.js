@@ -10,10 +10,10 @@ window.INVITATION_CONFIG = {
     "to join us in celebrating our Nikah and Walima, and to share in the joy of this blessed union",
   bismillah: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
   bismillahEnglish: "In the name of Allah, the Most Gracious, the Most Merciful",
-  countdownSubtitle: "until our Nikah",
+  countdownSubtitle: "until our Walima",
   weddingDate: "Monday, the 27th of September",
   weddingYear: "2026",
-  weddingTime: "at half past 10:30 AM in the morning",
+  weddingTime: "half-past 10:30 AM to 6 PM onwards",
   countdownISO: "2026-09-27T10:30:00+05:30",
   venueName: "SS Mahal Pammal",
   venueAddress:

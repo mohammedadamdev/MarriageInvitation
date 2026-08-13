@@ -70,7 +70,7 @@ function getDefaultConfig() {
     mapGoogleUrl: c.mapGoogleUrl || "",
     bismillah: c.bismillah || "",
     bismillahEnglish: c.bismillahEnglish || "",
-    countdownSubtitle: c.countdownSubtitle || "until our Nikah",
+    countdownSubtitle: c.countdownSubtitle || "until our Walima",
     invitationDua:
       c.invitationDua ||
       "May Allah bless this union and grant us a life filled with peace, mercy, and love.",
@@ -148,7 +148,7 @@ function updateDisplay(data) {
   const showcaseName = document.getElementById("venue-showcase-name");
   const showcaseMeta = document.getElementById("venue-showcase-meta");
   if (showcaseName) showcaseName.textContent = data.venueName;
-  if (showcaseMeta) showcaseMeta.textContent = `27 September ${data.weddingYear} · 10:30 AM`;
+  if (showcaseMeta) showcaseMeta.textContent = `27 September ${data.weddingYear} · 10:30 AM to 6 PM`;
 
   const rsvpLabelEl = document.getElementById("rsvp-label");
   if (rsvpLabelEl) rsvpLabelEl.textContent = data.rsvpLabel;
@@ -172,7 +172,7 @@ function updateDisplay(data) {
   document.getElementById("map-address").textContent = shortAddr.replace(/\n/g, ", ");
 
   const countdownUntil = document.getElementById("countdown-until");
-  if (countdownUntil) countdownUntil.textContent = data.countdownSubtitle || "until our Nikah";
+  if (countdownUntil) countdownUntil.textContent = data.countdownSubtitle || "until our Walima";
 
   const setText = (id, val) => {
     const el = document.getElementById(id);
